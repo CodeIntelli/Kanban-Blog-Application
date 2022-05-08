@@ -12,6 +12,7 @@ let categorySchema = new mongoose.Schema(
     },
     publishAt: {
       type: Date,
+      default: Date.now,
     },
     createdBy: {
       type: mongoose.mongoose.Schema.Types.ObjectId,

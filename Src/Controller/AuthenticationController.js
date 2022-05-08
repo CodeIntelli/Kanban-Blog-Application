@@ -16,7 +16,15 @@ const AuthenticationController = {
         });
 
         let { name, email, password } = req.body;
-
+        // check if user in database already
+        try {
+          const exist = await UserModel.exists({ email: req.body.email });
+          if (exist) {
+            return next(new ErrorHandler("This email is already taken", 409));
+          }
+        } catch (err) {
+          return next(err);
+        }
         let user = await UserModel.create({
           name: req.body.name.trim(),
           email,
@@ -28,6 +36,15 @@ const AuthenticationController = {
         });
       }
       let { name, email, password } = req.body;
+      // check if user in database already
+      try {
+        const exist = await UserModel.exists({ email: req.body.email });
+        if (exist) {
+          return next(new ErrorHandler("This email is already taken", 409));
+        }
+      } catch (err) {
+        return next(err);
+      }
 
       let user = await UserModel.create({
         name: req.body.name.trim(),

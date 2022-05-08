@@ -9,7 +9,7 @@ const UserController = {
       const user = await UserModel.findById(req.user.id);
       res.status(200).json({ success: true, user });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return new ErrorHandler(error, 500);
     }
   },
 
@@ -20,7 +20,7 @@ const UserController = {
       const users = await UserModel.find();
       res.status(200).json({ success: true, users });
     } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      return new ErrorHandler(error, 500);
     }
   },
 

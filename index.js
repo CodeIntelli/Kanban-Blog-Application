@@ -1,8 +1,8 @@
 // package calling
 import express from "express";
 const app = express();
-import { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_API_SECRET } from "./config";
-import { AuthenticationRoutes, UserRoutes } from "./Src/Routes";
+import { PORT, CLOUD_NAME, CLOUD_API_KEY, CLOUD_API_SECRET } from "./Config";
+import { AuthenticationRoutes, BlogRoutes, UserRoutes } from "./Src/Routes";
 import "./Src/Database";
 import cors from "cors";
 import { Error } from "./Src/Middleware";
@@ -24,6 +24,7 @@ app.use(fileUpload({ useTempFiles: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 // todo: All Routes Declare Here
 app.use("/api/v1/", UserRoutes);
+app.use("/api/v1/blog", BlogRoutes);
 app.use("/api/v1/auth", AuthenticationRoutes);
 
 //* Middleware for Error

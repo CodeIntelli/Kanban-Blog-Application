@@ -31,11 +31,9 @@ class APIFeatures {
     return this;
   }
   pagination(resultPerPage) {
+    console.log(this.queryStr, this.query);
     const current_page = Number(this.queryStr.page) || 1;
     const skipRecord = resultPerPage * (current_page - 1);
-    // for example skip = 5 * (1 - 1) means skip 0
-    // for example skip = 5 * (2 - 1) means skip 5
-    // for example skip = 5 * (3 - 1) means skip 10
     this.query = this.query.limit(resultPerPage).skip(skipRecord);
     return this;
   }

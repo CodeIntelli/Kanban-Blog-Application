@@ -18,11 +18,11 @@ const Authentication = async (req, res, next) => {
       return new ErrorHandler("Please Login to access this resources", 401);
     }
     const decodeData = jwt.verify(token, JWT_SECRET);
-    console.log(decodeData);
+
     // let userVerify = await UserModel.findOne({});
 
     req.user = await UserModel.findById(decodeData.id);
-    console.log(req.user);
+   
     if (!req.user.verified) {
       const token = await TokenModel.create({
         userId: req.user._id,
