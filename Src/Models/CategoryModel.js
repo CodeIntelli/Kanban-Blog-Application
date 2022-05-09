@@ -18,19 +18,18 @@ let categorySchema = new mongoose.Schema(
       type: mongoose.mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    image: {
-      public_id: {
-        type: String,
-        required: true,
-        default: "userProfileImage/tzsmxrevyes1xsuyujlk",
+    images: [
+      {
+        public_id: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
       },
-      url: {
-        type: String,
-        required: true,
-        default:
-          "https://res.cloudinary.com/dm3gs2s0h/image/upload/v1650136405/userProfileImage/tzsmxrevyes1xsuyujlk.png",
-      },
-    },
+    ],
   },
   {
     timestamps: {
