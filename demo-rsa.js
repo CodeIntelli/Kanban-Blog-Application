@@ -25,16 +25,43 @@
 // console.log("decrypted: ", decrypted);
 
 // crypto module
-const crypto = require("crypto");
-const algorithm = "aes-256-cbc";
-const initVector = crypto.randomBytes(16);
-const message = "This is a secret message";
-const Securitykey = crypto.randomBytes(32);
-const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
-let encryptedData = cipher.update(message, "utf-8", "hex");
-encryptedData += cipher.final("hex");
-console.log("Encrypted message: " + encryptedData);
-const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
-let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
-decryptedData += decipher.final("utf8");
-console.log("Decrypted message: " + decryptedData);
+// const crypto = require("crypto");
+// const algorithm = "aes-256-cbc";
+// const initVector = crypto.randomBytes(16);
+// const message = "This is a secret message";
+// const Securitykey = crypto.randomBytes(32);
+// const cipher = crypto.createCipheriv(algorithm, Securitykey, initVector);
+// let encryptedData = cipher.update(message, "utf-8", "hex");
+// encryptedData += cipher.final("hex");
+// console.log("Encrypted message: " + encryptedData);
+// const decipher = crypto.createDecipheriv(algorithm, Securitykey, initVector);
+// let decryptedData = decipher.update(encryptedData, "hex", "utf-8");
+// decryptedData += decipher.final("utf8");
+// console.log("Decrypted message: " + decryptedData);
+// var password = "myPassword";
+// var b64string =
+//   "AwHsr+ZD87myaoHm51kZX96u4hhaTuLkEsHwpCRpDywMO1Moz35wdS6OuDgq+SIAK6BOSVKQFSbX/GiFSKhWNy1q94JidKc8hs581JwVJBrEEoxDaMwYE+a+sZeirThbfpup9WZQgp3XuZsGuZPGvy6CvHWt08vsxFAn9tiHW9EFVtdSK7kAGzpnx53OUSt451Jpy6lXl1TKek8m64RT4XPr";
+
+// var RNCryptor = require("jscryptor");
+
+// console.time("Decrypting example");
+// var decrypted = RNCryptor.Decrypt(b64string, password);
+// console.timeEnd("Decrypting example");
+// console.log("Result:", decrypted.toString());
+
+var fs = require("fs");
+var RNCryptor = require("jscryptor");
+
+var password = "myPassword";
+
+var img = fs.readFileSync("./Octocat.jpg");
+var enc = RNCryptor.Encrypt(img, password);
+
+// Save encrypted image to a file, for sending to anywhere
+fs.writeFileSync("./Octocat.enc", enc);
+
+// Now, to decrypt the image:
+var b64 = new Buffer(fs.readFileSync("./Octocat.enc").toString(), "base64");
+var dec = RNCryptor.Decrypt(b64, password);
+
+fs.writeFileSync("./Octocat2.jpg", dec);
