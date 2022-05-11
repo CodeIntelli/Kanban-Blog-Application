@@ -19,7 +19,12 @@ import cloudinary from "cloudinary";
 import bodyParser from "body-parser";
 import fileUpload from "express-fileupload";
 
+// For Getting Form Data In Postman
+var multipart = require("connect-multiparty");
+global.app = module.exports = express();
+
 //* Package Initialization
+app.use(multipart());
 app.use(fileUpload({ useTempFiles: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 // todo: All Routes Declare Here

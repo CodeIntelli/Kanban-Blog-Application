@@ -5,6 +5,7 @@ import { Authentication, Authorization } from "../Middleware";
 
 // [ + ]After Login this url is used for user
 UserRoutes.get("/profile", Authentication, UserController.getUserDetails);
+
 UserRoutes.put(
   "/changePassword",
   Authentication,
