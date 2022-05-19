@@ -3,11 +3,48 @@ import { ErrorHandler, SendToken, SendEmail } from "../Services";
 import { FRONTEND_URL } from "../../Config";
 import crypto from "crypto";
 import cloudinary from "cloudinary";
+const ObjectId = require("mongoose").Types.ObjectId;
+function isValidObjectId(id) {
+  if (ObjectId.isValid(id)) {
+    if (String(new ObjectId(id)) === id) {
+      return true;
+    }
+    return false;
+  }
+  return false;
+}
 const AuthenticationController = {
   // [ + ] REGISTRATION LOGIC
-
   async registerUser(req, res, next) {
     try {
+      const UserValidation = Joi.object({
+        name: Joi.string().trim().min(3).max(30).required().messages({
+          "string.base": `User Name should be a type of 'text'`,
+          "string.empty": `User Name cannot be an empty field`,
+          "string.min": `User Name should have a minimum length of {3}`,
+          "any.required": `User Name is a required field`,
+        }),
+        email: Joi.string().email().trim().required().messages({
+          "string.base": `User Email should be a type of 'text'`,
+          "string.empty": `User Email cannot be an empty field`,
+          "any.required": `User Email is a required field`,
+        }),
+        password: Joi.string()
+          .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
+          .required(),
+        confirmPassword: Joi.ref("password"),
+        avatar: Joi.string(),
+        verified: Joi.boolean().default(false),
+        role: Joi.string().default("user"),
+        status: Joi.string().default("Active"),
+        userIp: Joi.string().default("0.0.0.0"),
+        userLocation: Joi.string().default("Some Location"),
+      });
+      const { error } = UserValidation.validate(req.body);
+      if (error) {
+        return next(error);
+      }
+
       if (req.body.avatar) {
         let myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
           folder: "userProfileImage",
@@ -16,9 +53,17 @@ const AuthenticationController = {
         });
 
         let { name, email, password } = req.body;
-
+        // check if user in database already
+        try {
+          const exist = await UserModel.exists({ email: req.body.email });
+          if (exist) {
+            return next(new ErrorHandler("This email is already taken", 409));
+          }
+        } catch (err) {
+          return next(err);
+        }
         let user = await UserModel.create({
-          name: req.body.name.trim(),
+          name,
           email,
           password,
           avatar: {
@@ -27,10 +72,20 @@ const AuthenticationController = {
           },
         });
       }
-      let { name, email, password } = req.body;
+      let { name, email, password, userLocation } = req.body;
+      // check if user in database already
+      try {
+        const exist = await UserModel.exists({ email: req.body.email });
+        if (exist) {
+          console.log(exist);
+          return next(new ErrorHandler("This email is already taken", 409));
+        }
+      } catch (err) {
+        return next(err);
+      }
 
       let user = await UserModel.create({
-        name: req.body.name.trim(),
+        name,
         email,
         password,
         userIp: req.socket.remoteAddress,
@@ -69,7 +124,6 @@ const AuthenticationController = {
   },
 
   // [ + ] VERIFICATION EMAIL LOGIC
-
   async verifyEmail(req, res, next) {
     try {
       const user = await UserModel.findOne({ _id: req.params.id });
@@ -104,7 +158,6 @@ const AuthenticationController = {
   },
 
   // [ + ] LOGIN USER LOGIC
-
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -196,7 +249,6 @@ const AuthenticationController = {
   },
 
   // [ + ] LOGOUT LOGIC
-
   async logout(req, res, next) {
     try {
       res.cookie("token", null, {
@@ -213,7 +265,6 @@ const AuthenticationController = {
   },
 
   // [ + ] FORGOT PASSWORD USER LOGIC
-
   async forgotPassword(req, res, next) {
     const user = await UserModel.findOne({ email: req.body.email });
     if (!user) {
@@ -245,7 +296,6 @@ const AuthenticationController = {
   },
 
   // [ + ] RESET PASSWORD USER LOGIC
-
   async resetPassword(req, res, next) {
     try {
       const resetPasswordToken = crypto

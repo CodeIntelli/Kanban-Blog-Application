@@ -1,5 +1,5 @@
 import { ErrorHandler } from "../Services";
-
+import { ValidationError } from "joi";
 const errorDetails = (error, req, res, next) => {
   error.statusCode = error.statusCode || 500;
   error.message = error.message || "Internal Server Error";
@@ -27,9 +27,19 @@ const errorDetails = (error, req, res, next) => {
     const message = `Json Web Token is Expired, try again`;
     error = new ErrorHandler(message, 400);
   }
+  // Joi Error
+  if (error instanceof ValidationError) {
+    console.log(error.message);
+    error.statusCode = 422;
+    // const data = {
+    //   message: error,
+    // };
+    error = new ErrorHandler(error.message, error.statusCode);
+  }
   res.status(error.statusCode).json({
     success: false,
-    error: error,
+    code: error.statusCode,
+    data: "",
     message: error.message,
   });
 };
