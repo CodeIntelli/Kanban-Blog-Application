@@ -36,7 +36,6 @@ const errorDetails = (error, req, res, next) => {
     // };
     error = new ErrorHandler(error.message, error.statusCode);
   }
-  console.log(error.statusCode);
   res.status(error.statusCode).json({
     success: false,
     code: error.statusCode,

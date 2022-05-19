@@ -36,7 +36,11 @@ UserRoutes.put(
   Authorization("admin"),
   UserController.updateUserRole
 );
-UserRoutes.delete("/user/:id", Authentication, UserController.deleteUser);
+UserRoutes.delete(
+  "/user/:id",
+  Authentication,
+  UserController.deleteAccountPermenantlyUser
+);
 UserRoutes.delete(
   "/admin/user/:id",
   Authentication,

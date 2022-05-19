@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-let Schema = mongoose.Schema;
 import CommentModel from "./CategoryModel";
 const BlogSchema = new mongoose.Schema(
   {
@@ -102,17 +101,19 @@ const BlogSchema = new mongoose.Schema(
       default: 0,
     },
     metaTitle: {
-      type: Number,
+      type: String,
       required: true,
     },
     metaDescription: {
-      type: Number,
+      type: String,
       required: true,
     },
-    metaKeyword: {
-      type: Number,
-      required: true,
-    },
+    metaKeyword: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
   },
   {
     timestamps: {
