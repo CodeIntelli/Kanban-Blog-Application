@@ -5,6 +5,7 @@ import { Authentication, Authorization } from "../Middleware";
 
 // [ + ]After Login this url is used for user
 UserRoutes.get("/profile", Authentication, UserController.getUserDetails);
+
 UserRoutes.put(
   "/changePassword",
   Authentication,
@@ -35,7 +36,11 @@ UserRoutes.put(
   Authorization("admin"),
   UserController.updateUserRole
 );
-UserRoutes.delete("/user/:id", Authentication, UserController.deleteUser);
+UserRoutes.delete(
+  "/user/:id",
+  Authentication,
+  UserController.deleteAccountPermenantlyUser
+);
 UserRoutes.delete(
   "/admin/user/:id",
   Authentication,

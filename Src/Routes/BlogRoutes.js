@@ -16,6 +16,10 @@ BlogRoutes.post(
   CategoryController.newCategory
 );
 BlogRoutes.get("/category", CategoryController.allCategory);
+BlogRoutes.get("/category/:id", CategoryController.specificCategory);
+BlogRoutes.put("/category/:id", CategoryController.editCategory);
+BlogRoutes.delete("/blockcategory/:id", CategoryController.blockCategory);
+BlogRoutes.delete("/category/:id", CategoryController.removeCategory);
 
 // [ - ] BLOG ROUTES
 export default BlogRoutes;
